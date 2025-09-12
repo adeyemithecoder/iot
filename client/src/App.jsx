@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 // const HOST = window.location.hostname; // your PC LAN IP if needed
@@ -8,7 +8,7 @@ import axios from "axios";
 const HOST = "iot-5mu7.onrender.com";
 const WS_URL = `wss://${HOST}`; // Secure WebSocket
 const HTTP_URL = `https://${HOST}`;
-
+console.log(WS_URL);
 function App() {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -16,7 +16,6 @@ function App() {
 
   useEffect(() => {
     const ws = new WebSocket(WS_URL);
-
     ws.onopen = () => {
       console.log("WS open");
       setConnected(true);
