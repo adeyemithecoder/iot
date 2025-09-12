@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const HOST = window.location.hostname; // your PC LAN IP if needed
-const WS_URL = `ws://${HOST}:8000`;
-const HTTP_URL = `http://${HOST}:8000`;
+// const HOST = window.location.hostname; // your PC LAN IP if needed
+// const WS_URL = `ws://${HOST}:8000`;
+// const HTTP_URL = `http://${HOST}:8000`;
+
+const HOST = "iot-5mu7.onrender.com";
+const WS_URL = `wss://${HOST}`; // Secure WebSocket
+const HTTP_URL = `https://${HOST}`;
 
 function App() {
   const [connected, setConnected] = useState(false);

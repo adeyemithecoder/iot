@@ -5,8 +5,12 @@ const char* ssid = "Developer 1";
 const char* password = "11113333";
 
 // Your PC / server LAN IP
-const char* host = "10.103.123.107"; 
-const uint16_t port = 8000;
+// const char* host = "10.103.123.107"; 
+// const uint16_t port = 8000;
+
+const char* host = "iot-5mu7.onrender.com";
+const uint16_t port = 443;
+
 
 WebSocketsClient webSocket;  // Declare object first
 
@@ -45,7 +49,9 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   // Initialize WebSocket inside setup()
-  webSocket.begin(host, port, "/");
+  // webSocket.begin(host, port, "/");
+  webSocket.beginSSL(host, port, "/");  // Use SSL for wss://
+
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000); // try reconnect every 5 seconds
 }
