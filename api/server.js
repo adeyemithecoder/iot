@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
@@ -12,46 +11,29 @@ app.use(bodyParser.json());
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// Broadcast helper
 function broadcast(obj) {
-  const str = JSON.stringify(obj);
+  const str = typeof obj === "string" ? obj : JSON.stringify(obj);
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) client.send(str);
   });
 }
 
-// WS connections
 wss.on("connection", (ws) => {
   console.log("WS client connected");
-  // Optionally send a welcome message
-  ws.send(
-    JSON.stringify({
-      message: "Welcome from server",
-      time: new Date().toISOString(),
-    })
-  );
-
-  ws.on("message", (msg) => {
-    console.log("Received from client:", msg.toString());
-    // optional: if clients send messages, you can handle them here
-  });
-
-  ws.on("close", () => console.log("Client disconnected"));
+  ws.send("Welcome ESP32/Client");
 });
 
-// REST endpoint to simulate DB change and broadcast
-app.post("/update", (req, res) => {
-  const payload = req.body || {};
-  const data = {
-    ...payload,
-    serverTime: new Date().toISOString(),
-  };
-
-  broadcast(data);
-  res.json({ ok: true, broadcasted: data });
+// REST endpoint for LED control
+app.post("/led", (req, res) => {
+  const { state } = req.body;
+  if (state === "on") {
+    broadcast("LED_ON");
+  } else if (state === "off") {
+    broadcast("LED_OFF");
+  }
+  res.json({ ok: true, state });
 });
 
-// Optional: simple health check
 app.get("/", (req, res) => res.send("IoT WS server running"));
 
 const PORT = process.env.PORT || 8000;
