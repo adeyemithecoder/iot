@@ -8,6 +8,21 @@ const HTTP_URL = `https://${HOST}`;
 function App() {
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [deviceOnline, setDeviceOnline] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await axios.get(`${HTTP_URL}/device-status`);
+        setDeviceOnline(res.data.online);
+      } catch (err) {
+        console.error("Status check failed");
+        setDeviceOnline(false);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const ws = new WebSocket(WS_URL);
@@ -30,6 +45,8 @@ function App() {
   return (
     <div style={{ padding: 20 }}>
       <h2>IoT Dashboard (LED Control)</h2>
+      <p>Device: {deviceOnline ? "🟢 Online" : "🔴 Offline"}</p>
+
       <p>Status: {connected ? "🟢 Connected" : "🔴 Disconnected"}</p>
 
       <div style={{ marginTop: 12 }}>

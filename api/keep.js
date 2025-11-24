@@ -17,40 +17,10 @@ function broadcast(obj) {
     if (client.readyState === WebSocket.OPEN) client.send(str);
   });
 }
-let deviceLastSeen = null;
-let isDeviceOnline = false;
 
 wss.on("connection", (ws) => {
   console.log("WS client connected");
-
-  ws.on("message", (msg) => {
-    if (msg === "PING") {
-      deviceLastSeen = Date.now();
-      isDeviceOnline = true;
-    }
-  });
-
-  // When WebSocket disconnects
-  ws.on("close", () => {
-    isDeviceOnline = false;
-    console.log("Client disconnected");
-  });
-});
-
-setInterval(() => {
-  if (!deviceLastSeen) return;
-
-  if (Date.now() - deviceLastSeen > 10000) {
-    // 10 seconds without ping
-    isDeviceOnline = false;
-  }
-}, 3000);
-
-app.get("/device-status", (req, res) => {
-  res.json({
-    online: isDeviceOnline,
-    lastSeen: deviceLastSeen,
-  });
+  ws.send("Welcome ESP32/Client");
 });
 
 // REST endpoint for LED control

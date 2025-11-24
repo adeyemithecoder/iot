@@ -11,6 +11,9 @@ WebSocketsClient webSocket;
 
 #define LED_PIN 5  
 
+unsigned long lastPing = 0;
+
+
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
   switch(type) {
     case WStype_DISCONNECTED:
@@ -58,4 +61,9 @@ void setup() {
 
 void loop() {
   webSocket.loop();
+
+  if (millis() - lastPing > 5000) {  // every 5 seconds
+    webSocket.sendTXT("PING");
+    lastPing = millis();
+  }
 }
