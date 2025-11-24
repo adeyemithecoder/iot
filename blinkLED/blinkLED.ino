@@ -53,8 +53,8 @@ void setup() {
   }
   Serial.println("\nWiFi connected. IP: ");
   Serial.println(WiFi.localIP());
+  webSocket.beginSSL(host, port, "/ws");
 
-  webSocket.beginSSL(host, port, "/");
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);
 }

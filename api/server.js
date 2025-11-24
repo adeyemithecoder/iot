@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ server, path: "/ws" });
 
 function broadcast(obj) {
   const str = typeof obj === "string" ? obj : JSON.stringify(obj);
