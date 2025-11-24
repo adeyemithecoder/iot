@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const HOST = "adeyemi-iot.onrender.com";
+const HOST = "iot-5mu7.onrender.com";
 const WS_URL = `wss://${HOST}`;
 const HTTP_URL = `https://${HOST}`;
 
