@@ -4,20 +4,17 @@
 const char* ssid = "Developer 1";
 const char* password = "111133334";
 
-// 🔥 Render WebSocket host
-const char* host = "adeyemi-iot.onrender.com";
-const uint16_t port = 443;
+const char* host = "10.73.74.107";
+const uint16_t port = 8000;
 
 WebSocketsClient webSocket;
 
 #define LED_PIN 5  
 
 unsigned long lastPing = 0;
-unsigned long lastStatusUpdate = 0;
 
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
   switch(type) {
-
     case WStype_DISCONNECTED:
       Serial.println("[WSc] Disconnected");
       break;
@@ -38,6 +35,9 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
         Serial.println("LED turned OFF");
       }
       break;
+
+    default:
+      break;
   }
 }
 
@@ -52,14 +52,13 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-
-  Serial.println("\nWiFi connected!");
+  Serial.println("\nWiFi connected. IP: ");
   Serial.println(WiFi.localIP());
 
-  // 🔥 REQUIRED FOR RENDER (WebSocket secure)
-  webSocket.beginSSL(host, port, "/");
+  // 🔥 Non-SSL WebSocket (local)
+  webSocket.begin(host, port, "/");
 
-  // 🔥 Required for some hosting proxies (Render, Vercel, Cloudflare)
+  // 🔥 FIX — required for some WS servers
   webSocket.setExtraHeaders("");
 
   webSocket.onEvent(webSocketEvent);
@@ -69,20 +68,8 @@ void setup() {
 void loop() {
   webSocket.loop();
 
-  // 🔥 Send PING every 5 seconds
-  if (millis() - lastPing > 5000) {
+  if (millis() - lastPing > 5000) {  
     webSocket.sendTXT("PING");
     lastPing = millis();
-  }
-
-  // 🔥 Send device status every 10 seconds
-  if (millis() - lastStatusUpdate > 10000) {
-    String status = "{ \"status\": \"online\", \"led\": " + 
-                    String(digitalRead(LED_PIN)) + " }";
-
-    webSocket.sendTXT(status);
-    Serial.println("Sent status: " + status);
-
-    lastStatusUpdate = millis();
   }
 }

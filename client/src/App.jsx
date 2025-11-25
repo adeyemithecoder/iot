@@ -4,6 +4,9 @@ import axios from "axios";
 const HOST = "adeyemi-iot.onrender.com";
 const WS_URL = `wss://${HOST}`;
 const HTTP_URL = `https://${HOST}`;
+// const HOST = "10.73.74.107:8000";
+// const WS_URL = `ws://${HOST}`;
+// const HTTP_URL = `http://${HOST}`;
 
 function App() {
   const [connected, setConnected] = useState(false);

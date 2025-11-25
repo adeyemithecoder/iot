@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server, path: "/ws" });
+const wss = new WebSocket.Server({ server });
 
 function broadcast(obj) {
   const str = typeof obj === "string" ? obj : JSON.stringify(obj);
@@ -23,8 +23,17 @@ let isDeviceOnline = false;
 wss.on("connection", (ws) => {
   console.log("WS client connected");
 
+  // ws.on("message", (msg) => {
+  //   if (msg === "PING") {
+  //     deviceLastSeen = Date.now();
+  //     isDeviceOnline = true;
+  //   }
+  // });
   ws.on("message", (msg) => {
-    if (msg === "PING") {
+    const text = msg.toString();
+    console.log("Received:", text);
+
+    if (text === "PING") {
       deviceLastSeen = Date.now();
       isDeviceOnline = true;
     }
